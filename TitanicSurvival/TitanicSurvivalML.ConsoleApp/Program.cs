@@ -24,7 +24,8 @@ namespace TitanicSurvivalML.ConsoleApp
             inputData.Fare_Notmalized = 5;
 
             // Make a single prediction on the sample data and print results
-            ModelOutput predictionResult = ConsumeModel.Predict(inputData);
+            // ModelOutput predictionResult = ConsumeModel.Predict(inputData);
+            ModelOutput predictionResult = ConsumeModelWrapper.Predict(inputData);
 
             Console.WriteLine("Using model to make single prediction -- Comparing actual Survived with predicted Survived from sample data...\n\n");
            
