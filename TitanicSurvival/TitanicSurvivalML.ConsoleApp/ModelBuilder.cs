@@ -7,13 +7,13 @@ using System.Linq;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using TitanicSurvivalML.Model;
-using Microsoft.ML.Trainers.LightGbm;
+using Microsoft.ML.Trainers.FastTree;
 
 namespace TitanicSurvivalML.ConsoleApp
 {
     public static class ModelBuilder
     {
-        private static string TRAIN_DATA_FILEPATH = @"C:\MyFolder\Labs\MLnet\TitanicSurvival\TitanicMLApp\train-filtered-rd.csv";
+        private static string TRAIN_DATA_FILEPATH = @"C:\MyFolder\Labs\MLnet\MLNetLearningRepo\TitanicSurvival\TitanicMLApp\train-filtered-rd.csv";
         private static string MODEL_FILEPATH = @"../../../../TitanicSurvivalML.Model/MLModel.zip";
 
         // Create MLContext to be shared across the model creation workflow objects 
@@ -49,7 +49,7 @@ namespace TitanicSurvivalML.ConsoleApp
             var dataProcessPipeline = mlContext.Transforms.Concatenate("Features", new[] { "Pclass", "Gender Normalized", "Age Notmalized", "Fare Notmalized" });
 
             // Set the training algorithm 
-            var trainer = mlContext.BinaryClassification.Trainers.LightGbm(new LightGbmBinaryTrainer.Options() { NumberOfIterations = 100, LearningRate = 0.1115653f, NumberOfLeaves = 81, MinimumExampleCountPerLeaf = 10, UseCategoricalSplit = false, HandleMissingValue = true, MinimumExampleCountPerGroup = 10, MaximumCategoricalSplitPointCount = 16, CategoricalSmoothing = 10, L2CategoricalRegularization = 0.5, Booster = new GradientBooster.Options() { L2Regularization = 1, L1Regularization = 0.5 }, LabelColumnName = "Survived", FeatureColumnName = "Features" });
+            var trainer = mlContext.BinaryClassification.Trainers.FastTree(new FastTreeBinaryTrainer.Options() { NumberOfLeaves = 3, MinimumExampleCountPerLeaf = 50, NumberOfTrees = 500, LearningRate = 0.382561f, Shrinkage = 0.09744918f, LabelColumnName = "Survived", FeatureColumnName = "Features" });
             var trainingPipeline = dataProcessPipeline.Append(trainer);
 
             return trainingPipeline;

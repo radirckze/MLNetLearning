@@ -11,51 +11,36 @@ namespace TitanicSurvivalML.ConsoleApp
     class Program
     {
         //Dataset to use for predictions 
-        private const string DATA_FILEPATH = @"C:\MyFolder\Labs\MLnet\TitanicSurvival\TitanicMLApp\train-filtered-rd.csv";
+        private const string DATA_FILEPATH = @"C:\MyFolder\Labs\MLnet\MLNetLearningRepo\TitanicSurvival\TitanicMLApp\train-filtered-rd.csv";
 
         static void Main(string[] args)
         {
-            // Create single instance of sample data from first line of dataset for model input
-            //ModelInput sampleData = CreateSingleDataSample(DATA_FILEPATH);
-            ModelInput inputData = new ModelInput();
-            inputData.Pclass = 1;
-            inputData.Gender_Normalized = 2;
-            inputData.Age_Notmalized = 5;
-            inputData.Fare_Notmalized = 5;
+            bool terminate = false;
 
-            // Make a single prediction on the sample data and print results
-            // ModelOutput predictionResult = ConsumeModel.Predict(inputData);
-            ModelOutput predictionResult = ConsumeModelWrapper.Predict(inputData);
+            do
+            {
+                ModelInput sampleData = new ModelInput();
 
-            Console.WriteLine("Using model to make single prediction -- Comparing actual Survived with predicted Survived from sample data...\n\n");
-           
-            Console.WriteLine($"\nPredicted Survived: {predictionResult.Prediction}\n");
-            Console.WriteLine("=============== End of process, hit any key to finish ===============");
-            Console.ReadKey();
+                Console.Write("Enter ticket class (1, 2, 3):");
+                sampleData.Pclass = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Enter gender (1 - male, 2 - female):");
+                sampleData.Gender_Normalized = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Enter age range  (1-10):");
+                sampleData.Age_Notmalized = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Enter fare range  (1-10):");
+                sampleData.Fare_Notmalized = Convert.ToInt32(Console.ReadLine());
+
+                ModelOutput predictedResult = ConsumeModel.Predict(sampleData);
+                Console.WriteLine("The trained model predicts you " + (predictedResult.Prediction==true?"survived":"did not survice"));
+
+                Console.WriteLine("Press any key to make another prediction or <return> to terminate:");
+                string response = Console.ReadLine();
+                terminate = String.IsNullOrEmpty(response);
+
+            }
+            while (!terminate);
         }
 
-        // Change this code to create your own sample data
-        #region CreateSingleDataSample
-        // Method to load single row of dataset to try a single prediction
-        private static ModelInput CreateSingleDataSample(string dataFilePath)
-        {
-            // Create MLContext
-            MLContext mlContext = new MLContext();
-
-            // Load dataset
-            IDataView dataView = mlContext.Data.LoadFromTextFile<ModelInput>(
-                                            path: dataFilePath,
-                                            hasHeader: true,
-                                            separatorChar: ',',
-                                            allowQuoting: true,
-                                            allowSparse: false);
-
-            // Use first line of dataset as model input
-            // You can replace this with new test data (hardcoded or from end-user application)
-            ModelInput sampleForPrediction = mlContext.Data.CreateEnumerable<ModelInput>(dataView, false)
-                                                                        .First();
-            return sampleForPrediction;
-        }
-        #endregion
-    }
+    } 
+    
 }
